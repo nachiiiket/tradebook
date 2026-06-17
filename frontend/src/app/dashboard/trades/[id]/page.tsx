@@ -48,7 +48,7 @@ export default function TradeDetailPage() {
           <p className="text-slate-400">
             {trade.trade_date}
             {trade.strategy_name && (
-              <span className="ml-2 rounded-full px-2 py-0.5 text-xs" style={{ backgroundColor: `${trade.strategy_color}22`, color: trade.strategy_color }}>
+              <span className="ml-2 rounded-full px-2 py-0.5 text-xs" style={{ backgroundColor: `${trade.strategy_color}22`, color: trade.strategy_color ?? undefined }}>
                 {trade.strategy_name}
               </span>
             )}

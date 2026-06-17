@@ -73,7 +73,7 @@ export default function TradesPage() {
                   <td className="px-4 py-3 capitalize text-slate-300">{t.direction}</td>
                   <td className="px-4 py-3">
                     {t.strategy_name ? (
-                      <span className="rounded-full px-2 py-0.5 text-xs" style={{ backgroundColor: `${t.strategy_color}22`, color: t.strategy_color }}>
+                      <span className="rounded-full px-2 py-0.5 text-xs" style={{ backgroundColor: `${t.strategy_color ?? "#6366f1"}22`, color: t.strategy_color ?? undefined }}>
                         {t.strategy_name}
                       </span>
                     ) : (
