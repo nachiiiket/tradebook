@@ -29,8 +29,11 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
 
   if (checking) {
     return (
-      <div className="flex h-screen items-center justify-center bg-slate-950 text-slate-400">
-        Loading...
+      <div className="flex h-screen items-center justify-center bg-slate-950">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-indigo-400 border-t-transparent" />
+          <p className="text-sm text-slate-500">Verifying session...</p>
+        </div>
       </div>
     );
   }

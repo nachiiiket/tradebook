@@ -3,9 +3,10 @@
 import { api } from "@/lib/api";
 import type { Trade, TradeAnalysis } from "@/lib/types";
 import clsx from "clsx";
-import { Bot, Trash2 } from "lucide-react";
+import { Bot, Trash2, ArrowLeft } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 export default function TradeDetailPage() {
   const params = useParams();
@@ -35,31 +36,47 @@ export default function TradeDetailPage() {
     router.push("/dashboard/trades");
   }
 
-  if (!trade) return <p className="text-slate-400">Loading trade...</p>;
+  if (!trade) return (
+    <div className="space-y-4 animate-pulse">
+      <div className="h-8 w-64 skeleton" />
+      <div className="grid gap-4 sm:grid-cols-4">
+        {[...Array(4)].map((_, i) => <div key={i} className="h-24 skeleton" />)}
+      </div>
+      <div className="h-64 skeleton" />
+    </div>
+  );
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6">
-      <div className="flex items-start justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-white">
-            {trade.symbol}{" "}
-            <span className="text-lg font-normal capitalize text-slate-400">({trade.direction})</span>
-          </h1>
-          <p className="text-slate-400">
-            {trade.trade_date}
-            {trade.strategy_name && (
-              <span className="ml-2 rounded-full px-2 py-0.5 text-xs" style={{ backgroundColor: `${trade.strategy_color}22`, color: trade.strategy_color ?? undefined }}>
-                {trade.strategy_name}
-              </span>
-            )}
-          </p>
+    <div className="mx-auto max-w-4xl space-y-6 animate-in">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <Link href="/dashboard/trades" className="rounded-lg p-2 text-slate-400 hover:bg-slate-800 transition-all">
+            <ArrowLeft size={20} />
+          </Link>
+          <div>
+            <h1 className="text-2xl font-bold text-white">
+              {trade.symbol}{" "}
+              <span className="text-lg font-normal capitalize text-slate-400">({trade.direction})</span>
+            </h1>
+            <p className="text-slate-400 text-sm">
+              {trade.trade_date}
+              {trade.strategy_name && (
+                <span
+                  className="ml-2 rounded-full px-2.5 py-0.5 text-xs font-medium"
+                  style={{ backgroundColor: `${trade.strategy_color ?? "#6366f1"}22`, color: trade.strategy_color ?? "#6366f1" }}
+                >
+                  {trade.strategy_name}
+                </span>
+              )}
+            </p>
+          </div>
         </div>
         <div className="flex gap-2">
           <button onClick={handleAnalyze} disabled={analyzing} className="btn-primary flex items-center gap-2">
             <Bot size={16} />
             {analyzing ? "Analyzing..." : "AI Analyze"}
           </button>
-          <button onClick={handleDelete} className="btn-secondary text-rose-400">
+          <button onClick={handleDelete} className="rounded-xl border border-rose-500/20 px-4 py-2.5 text-sm text-rose-400 hover:bg-rose-500/10 transition-all duration-200">
             <Trash2 size={16} />
           </button>
         </div>
@@ -72,32 +89,40 @@ export default function TradeDetailPage() {
           { label: "RR Ratio", value: trade.rr_ratio || "—", color: "text-white" },
           { label: "Session", value: trade.session?.replace("_", " ") || "—", color: "text-white" },
         ].map(({ label, value, color }) => (
-          <div key={label} className="card p-4">
+          <div key={label} className="card p-5">
             <p className="text-xs text-slate-500">{label}</p>
-            <p className={clsx("mt-1 text-lg font-semibold capitalize", color)}>{value}</p>
+            <p className={clsx("mt-1.5 text-lg font-bold", color)}>{value}</p>
           </div>
         ))}
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <div className="card space-y-4 p-5">
+        <div className="card space-y-5 p-6">
           <h3 className="font-semibold text-white">Trade Details</h3>
-          <dl className="grid grid-cols-2 gap-3 text-sm">
-            <dt className="text-slate-500">Entry</dt><dd className="text-slate-200">{trade.entry_price || "—"}</dd>
-            <dt className="text-slate-500">Exit</dt><dd className="text-slate-200">{trade.exit_price || "—"}</dd>
-            <dt className="text-slate-500">Stop Loss</dt><dd className="text-slate-200">{trade.stop_loss || "—"}</dd>
-            <dt className="text-slate-500">Take Profit</dt><dd className="text-slate-200">{trade.take_profit || "—"}</dd>
-            <dt className="text-slate-500">Timeframe</dt><dd className="text-slate-200">{trade.timeframe || "—"}</dd>
-            <dt className="text-slate-500">Planned RR</dt><dd className="text-slate-200">{trade.planned_rr || "—"}</dd>
-            <dt className="text-slate-500">Emotion</dt><dd className="text-slate-200">{trade.emotional_state || "—"}</dd>
+          <dl className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
+            {[
+              ["Entry", trade.entry_price],
+              ["Exit", trade.exit_price],
+              ["Stop Loss", trade.stop_loss],
+              ["Take Profit", trade.take_profit],
+              ["Position Size", trade.position_size],
+              ["Timeframe", trade.timeframe],
+              ["Planned RR", trade.planned_rr],
+              ["Emotion", trade.emotional_state],
+            ].map(([label, value]) => (
+              <>
+                <dt className="text-slate-500">{label}</dt>
+                <dd className="text-slate-200 font-medium">{value || "—"}</dd>
+              </>
+            ))}
           </dl>
 
           {trade.confluences?.length > 0 && (
             <div>
-              <p className="text-xs text-slate-500">Confluences</p>
-              <div className="mt-1 flex flex-wrap gap-2">
+              <p className="text-xs font-medium text-slate-500 mb-2">Confluences</p>
+              <div className="flex flex-wrap gap-2">
                 {trade.confluences.map((c) => (
-                  <span key={c} className="rounded-full bg-indigo-500/20 px-2 py-0.5 text-xs text-indigo-300">{c}</span>
+                  <span key={c} className="rounded-full bg-indigo-500/10 px-3 py-1 text-xs text-indigo-300 border border-indigo-500/20">{c}</span>
                 ))}
               </div>
             </div>
@@ -105,10 +130,10 @@ export default function TradeDetailPage() {
 
           {trade.timeframe_confluences?.length > 0 && (
             <div>
-              <p className="text-xs text-slate-500">TF Confluences</p>
-              <div className="mt-1 flex flex-wrap gap-2">
+              <p className="text-xs font-medium text-slate-500 mb-2">TF Confluences</p>
+              <div className="flex flex-wrap gap-2">
                 {trade.timeframe_confluences.map((c) => (
-                  <span key={c} className="rounded-full bg-violet-500/20 px-2 py-0.5 text-xs text-violet-300">{c}</span>
+                  <span key={c} className="rounded-full bg-violet-500/10 px-3 py-1 text-xs text-violet-300 border border-violet-500/20">{c}</span>
                 ))}
               </div>
             </div>
@@ -116,39 +141,39 @@ export default function TradeDetailPage() {
 
           {trade.notes && (
             <div>
-              <p className="text-xs text-slate-500">Notes</p>
-              <p className="mt-1 text-sm text-slate-300 whitespace-pre-wrap">{trade.notes}</p>
+              <p className="text-xs font-medium text-slate-500 mb-1">Notes</p>
+              <p className="text-sm text-slate-300 whitespace-pre-wrap leading-relaxed">{trade.notes}</p>
             </div>
           )}
 
           {trade.mistakes && (
             <div>
-              <p className="text-xs text-rose-400">Mistakes</p>
-              <p className="mt-1 text-sm text-slate-300">{trade.mistakes}</p>
+              <p className="text-xs font-medium text-rose-400 mb-1">Mistakes</p>
+              <p className="text-sm text-slate-300">{trade.mistakes}</p>
             </div>
           )}
 
           {trade.lessons_learned && (
             <div>
-              <p className="text-xs text-emerald-400">Lessons</p>
-              <p className="mt-1 text-sm text-slate-300">{trade.lessons_learned}</p>
+              <p className="text-xs font-medium text-emerald-400 mb-1">Lessons</p>
+              <p className="text-sm text-slate-300">{trade.lessons_learned}</p>
             </div>
           )}
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-6">
           {trade.images && trade.images.length > 0 && (
-            <div className="card p-5">
-              <h3 className="font-semibold text-white">Chart Screenshots</h3>
-              <div className="mt-4 grid gap-3">
+            <div className="card p-6">
+              <h3 className="font-semibold text-white mb-4">Chart Screenshots</h3>
+              <div className="grid gap-4">
                 {trade.images.map((img) => (
                   <div key={img.id}>
                     <img
                       src={`data:${img.mime_type};base64,${img.image_base64}`}
                       alt={img.caption || "Trade chart"}
-                      className="rounded-lg border border-slate-700"
+                      className="rounded-xl border border-slate-700/50 w-full"
                     />
-                    {img.caption && <p className="mt-1 text-xs text-slate-500">{img.caption}</p>}
+                    {img.caption && <p className="mt-1.5 text-xs text-slate-500">{img.caption}</p>}
                   </div>
                 ))}
               </div>
@@ -156,34 +181,50 @@ export default function TradeDetailPage() {
           )}
 
           {analysis && (
-            <div className="card p-5">
-              <div className="flex items-center gap-2">
-                <Bot className="text-indigo-400" size={20} />
-                <h3 className="font-semibold text-white">AI Analysis</h3>
-                {analysis.ai_powered && <span className="rounded bg-indigo-500/20 px-2 py-0.5 text-xs text-indigo-300">GPT</span>}
+            <div className="card p-6 animate-slide-up">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-500/15">
+                  <Bot className="text-indigo-400" size={20} />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-white">AI Analysis</h3>
+                  {analysis.ai_powered && (
+                    <span className="inline-block rounded-full bg-indigo-500/15 px-2.5 py-0.5 text-xs font-medium text-indigo-300">GPT</span>
+                  )}
+                </div>
               </div>
-              <p className="mt-3 text-sm text-slate-300">{analysis.summary}</p>
+              <p className="text-sm text-slate-300 leading-relaxed">{analysis.summary}</p>
 
               {analysis.strengths?.length > 0 && (
                 <div className="mt-4">
-                  <p className="text-xs font-medium text-emerald-400">Strengths</p>
-                  <ul className="mt-1 list-inside list-disc text-sm text-slate-400">
-                    {analysis.strengths.map((s, i) => <li key={i}>{s}</li>)}
-                  </ul>
+                  <p className="text-xs font-semibold text-emerald-400 mb-2">Strengths</p>
+                  <div className="space-y-1">
+                    {analysis.strengths.map((s, i) => (
+                      <div key={i} className="flex items-start gap-2 text-sm text-slate-400">
+                        <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-emerald-400" />
+                        {s}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
 
               {analysis.improvements?.length > 0 && (
                 <div className="mt-4">
-                  <p className="text-xs font-medium text-indigo-400">Improvements</p>
-                  <ul className="mt-1 list-inside list-disc text-sm text-slate-400">
-                    {analysis.improvements.map((s, i) => <li key={i}>{s}</li>)}
-                  </ul>
+                  <p className="text-xs font-semibold text-indigo-400 mb-2">Improvements</p>
+                  <div className="space-y-1">
+                    {analysis.improvements.map((s, i) => (
+                      <div key={i} className="flex items-start gap-2 text-sm text-slate-400">
+                        <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-indigo-400" />
+                        {s}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
 
               {analysis.pattern_insight && (
-                <p className="mt-4 text-sm italic text-slate-500">{analysis.pattern_insight}</p>
+                <p className="mt-4 text-sm italic text-slate-500 border-t border-slate-800/40 pt-4">{analysis.pattern_insight}</p>
               )}
             </div>
           )}

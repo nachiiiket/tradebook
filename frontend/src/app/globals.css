@@ -5,7 +5,19 @@
 :root {
   --background: #020617;
   --foreground: #f1f5f9;
+  --indigo: #6366f1;
+  --indigo-glow: rgba(99, 102, 241, 0.15);
 }
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #1e293b transparent;
+}
+
+*::-webkit-scrollbar { width: 6px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+*::-webkit-scrollbar-thumb:hover { background: #475569; }
 
 body {
   color: var(--foreground);
@@ -13,18 +25,124 @@ body {
   font-family: var(--font-geist-sans), system-ui, sans-serif;
 }
 
+::selection {
+  background: rgba(99, 102, 241, 0.3);
+  color: #fff;
+}
+
 input, select, textarea {
-  @apply bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50;
+  @apply bg-slate-900/80 border border-slate-700/50 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder:text-slate-500;
+  @apply focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500/50;
+  @apply transition-all duration-200;
+}
+
+input:hover, select:hover, textarea:hover {
+  @apply border-slate-600;
 }
 
 button.btn-primary {
-  @apply rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500 transition disabled:opacity-50;
+  @apply relative rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white;
+  @apply hover:bg-indigo-500 active:scale-[0.97];
+  @apply transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100;
+  @apply shadow-lg shadow-indigo-500/20;
+}
+
+button.btn-primary:hover {
+  @apply shadow-indigo-500/30;
 }
 
 button.btn-secondary {
-  @apply rounded-lg border border-slate-700 px-4 py-2 text-sm text-slate-300 hover:bg-slate-800 transition;
+  @apply rounded-xl border border-slate-700/50 px-5 py-2.5 text-sm font-medium text-slate-300;
+  @apply hover:bg-slate-800/80 hover:text-white hover:border-slate-600;
+  @apply active:scale-[0.97] transition-all duration-200;
 }
 
 .card {
-  @apply rounded-xl border border-slate-800 bg-slate-900/60 backdrop-blur;
+  @apply rounded-2xl border border-slate-800/60 bg-gradient-to-b from-slate-900/80 to-slate-900/40;
+  @apply backdrop-blur-xl shadow-lg shadow-black/20;
+  @apply transition-all duration-300;
+}
+
+.card:hover {
+  @apply border-slate-700/60 shadow-xl shadow-black/30;
+}
+
+.gradient-text {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-cyan-400;
+  background-size: 200% auto;
+  animation: gradientX 4s ease infinite;
+}
+
+.gradient-border {
+  position: relative;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.gradient-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(99,102,241,0.3), rgba(139,92,246,0.1), rgba(99,102,241,0.3));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.glow {
+  box-shadow: 0 0 30px var(--indigo-glow);
+}
+
+.skeleton {
+  @apply rounded-xl bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800;
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite linear;
+}
+
+.animate-in {
+  opacity: 0;
+  animation: fadeIn 0.6s ease-out forwards, slideUp 0.5s ease-out forwards;
+}
+
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }
+.stagger-5 { animation-delay: 0.5s; }
+.stagger-6 { animation-delay: 0.6s; }
+
+@keyframes gridMove {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(50px); }
+}
+
+.bg-grid {
+  background-image:
+    linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  animation: gridMove 20s linear infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes gradientX {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes slideUp {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
 }

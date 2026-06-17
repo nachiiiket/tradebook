@@ -32,28 +32,28 @@ export default function PnlCalendar({ year, month, days, monthPnl, onMonthChange
   const cells = Array.from({ length: days.length }, (_, i) => i + 1);
 
   return (
-    <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-5">
+    <div className="rounded-2xl border border-slate-800/60 bg-gradient-to-b from-slate-900/80 to-slate-900/40 p-5 backdrop-blur-xl">
       <div className="mb-4 flex items-center justify-between">
-        <button onClick={prev} className="rounded p-1 text-slate-400 hover:bg-slate-800 hover:text-white">
+        <button onClick={prev} className="rounded-lg p-2 text-slate-400 hover:bg-slate-800 hover:text-white transition-all duration-200">
           <ChevronLeft size={20} />
         </button>
         <div className="text-center">
           <h3 className="font-semibold text-white">
             {new Date(year, month - 1).toLocaleString("default", { month: "long", year: "numeric" })}
           </h3>
-          <p className={clsx("text-sm", monthPnl >= 0 ? "text-emerald-400" : "text-rose-400")}>
+          <p className={clsx("text-sm font-medium", monthPnl >= 0 ? "text-emerald-400" : "text-rose-400")}>
             Month P&L: {monthPnl >= 0 ? "+" : ""}
             {monthPnl.toFixed(2)}
           </p>
         </div>
-        <button onClick={next} className="rounded p-1 text-slate-400 hover:bg-slate-800 hover:text-white">
+        <button onClick={next} className="rounded-lg p-2 text-slate-400 hover:bg-slate-800 hover:text-white transition-all duration-200">
           <ChevronRight size={20} />
         </button>
       </div>
 
-      <div className="grid grid-cols-7 gap-1 text-center text-xs text-slate-500">
+      <div className="grid grid-cols-7 gap-1 text-center text-xs">
         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((d) => (
-          <div key={d} className="py-1 font-medium">
+          <div key={d} className="py-1.5 text-slate-500 font-medium">
             {d}
           </div>
         ))}
@@ -68,17 +68,17 @@ export default function PnlCalendar({ year, month, days, monthPnl, onMonthChange
             <div
               key={day}
               className={clsx(
-                "rounded-lg p-2 min-h-[52px] border",
+                "rounded-xl p-2 min-h-[56px] transition-all duration-200",
                 hasTrades
                   ? pnl >= 0
-                    ? "border-emerald-500/30 bg-emerald-500/10"
-                    : "border-rose-500/30 bg-rose-500/10"
-                  : "border-transparent bg-slate-800/30"
+                    ? "border border-emerald-500/30 bg-gradient-to-b from-emerald-500/10 to-emerald-500/5 hover:from-emerald-500/15 hover:to-emerald-500/8"
+                    : "border border-rose-500/30 bg-gradient-to-b from-rose-500/10 to-rose-500/5 hover:from-rose-500/15 hover:to-rose-500/8"
+                  : "border border-transparent bg-slate-800/20"
               )}
             >
-              <div className="text-slate-300">{day}</div>
+              <div className={clsx("text-sm font-medium", hasTrades ? "text-slate-200" : "text-slate-600")}>{day}</div>
               {hasTrades && (
-                <div className={clsx("text-[10px] font-medium", pnl >= 0 ? "text-emerald-400" : "text-rose-400")}>
+                <div className={clsx("text-[10px] font-semibold mt-0.5", pnl >= 0 ? "text-emerald-400" : "text-rose-400")}>
                   {pnl >= 0 ? "+" : ""}
                   {pnl.toFixed(0)}
                 </div>
