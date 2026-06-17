@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: tradebook-api
+    runtime: python
+    buildCommand: pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --noinput
+    startCommand: gunicorn config.wsgi:application
+    envVars:
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DJANGO_DEBUG
+        value: "False"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: tradebook-db
+          property: connectionString
+
+databases:
+  - name: tradebook-db
+    plan: free
