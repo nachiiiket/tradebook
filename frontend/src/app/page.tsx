@@ -83,7 +83,7 @@ export default function HomePage() {
         <div className="mt-24">
           <p className="text-center text-sm font-medium text-indigo-400 uppercase tracking-widest">Everything you need</p>
           <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {features.map(({ icon: Icon, title, desc, gradient }, i) => (
+            {features.map(({ icon: Icon, title, desc, gradient }) => (
               <div
                 key={title}
                 className={`group relative overflow-hidden rounded-2xl border border-slate-800/60 bg-gradient-to-b ${gradient} to-slate-900/40 p-6 backdrop-blur-xl transition-all duration-300 hover:border-slate-700/60 hover:-translate-y-1 hover:shadow-xl hover:shadow-black/30`}
