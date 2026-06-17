@@ -168,7 +168,7 @@ export default function AnalyticsPage() {
                 cy="50%"
                 outerRadius={90}
                 labelLine={false}
-                label={({ name, percent }) => `${name.replace(/_/g, " ")} (${(percent * 100).toFixed(0)}%)`}
+                label={({ name, percent }) => `${(name ?? "").replace(/_/g, " ")} (${((percent ?? 0) * 100).toFixed(0)}%)`}
               >
                 {Object.keys(data.rr_distribution).map((_, i) => (
                   <Cell key={i} fill={COLORS[i % COLORS.length]} />
