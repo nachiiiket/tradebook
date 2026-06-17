@@ -52,7 +52,7 @@ export const api = {
   },
 
   async login(email: string, password: string): Promise<void> {
-    const data = await request<{ access: string; refresh: string; user: User }>("/api/auth/login/", {
+    const data = await request<{ access: string; refresh: string; user: User }>("/api/auth/login", {
       method: "POST",
       body: JSON.stringify({ email, password }),
     });
@@ -60,7 +60,7 @@ export const api = {
   },
 
   async register(email: string, password: string, firstName: string, lastName: string): Promise<void> {
-    const data = await request<{ access: string; refresh: string; user: User }>("/api/auth/register/", {
+    const data = await request<{ access: string; refresh: string; user: User }>("/api/auth/register", {
       method: "POST",
       body: JSON.stringify({ email, password, first_name: firstName, last_name: lastName }),
     });
@@ -68,14 +68,14 @@ export const api = {
   },
 
   async getMe(): Promise<User> {
-    return request<User>("/api/auth/me/");
+    return request<User>("/api/auth/me");
   },
 
   async getAnalytics(params: { year?: string; month?: string }): Promise<AnalyticsData> {
     const qs = new URLSearchParams();
     if (params.year) qs.set("year", params.year);
     if (params.month) qs.set("month", params.month);
-    return request<AnalyticsData>(`/api/analytics/dashboard/?${qs.toString()}`);
+    return request<AnalyticsData>(`/api/analytics/dashboard?${qs.toString()}`);
   },
 
   async getTrades(filter?: Record<string, string>): Promise<Trade[]> {
@@ -86,66 +86,66 @@ export const api = {
       }
     }
     const q = qs.toString();
-    return request<Trade[]>(`/api/trades/${q ? `?${q}` : ""}`);
+    return request<Trade[]>(`/api/trades${q ? `?${q}` : ""}`);
   },
 
   async getTrade(id: number): Promise<Trade> {
-    return request<Trade>(`/api/trades/${id}/`);
+    return request<Trade>(`/api/trades/${id}`);
   },
 
   async createTrade(data: Record<string, unknown>): Promise<Trade> {
-    return request<Trade>("/api/trades/", {
+    return request<Trade>("/api/trades", {
       method: "POST",
       body: JSON.stringify(data),
     });
   },
 
   async deleteTrade(id: number): Promise<void> {
-    return request<void>(`/api/trades/${id}/`, { method: "DELETE" });
+    return request<void>(`/api/trades/${id}`, { method: "DELETE" });
   },
 
   async uploadTradeImage(tradeId: number, file: File): Promise<void> {
     const fd = new FormData();
     fd.append("image", file);
-    await request<void>(`/api/trades/${tradeId}/upload_image/`, {
+    await request<void>(`/api/trades/${tradeId}/upload_image`, {
       method: "POST",
       body: fd,
     });
   },
 
   async analyzeTrade(id: number): Promise<TradeAnalysis> {
-    return request<TradeAnalysis>("/api/ai/analyze-trade/", {
+    return request<TradeAnalysis>("/api/ai/analyze-trade", {
       method: "POST",
       body: JSON.stringify({ trade_id: id }),
     });
   },
 
   async portfolioCoach(): Promise<PortfolioCoach> {
-    return request<PortfolioCoach>("/api/ai/portfolio-coach/", {
+    return request<PortfolioCoach>("/api/ai/portfolio-coach", {
       method: "POST",
       body: JSON.stringify({}),
     });
   },
 
   async getStrategies(): Promise<Strategy[]> {
-    return request<Strategy[]>("/api/strategies/");
+    return request<Strategy[]>("/api/strategies");
   },
 
   async createStrategy(data: Record<string, unknown>): Promise<Strategy> {
-    return request<Strategy>("/api/strategies/", {
+    return request<Strategy>("/api/strategies", {
       method: "POST",
       body: JSON.stringify(data),
     });
   },
 
   async updateStrategy(id: number, data: Record<string, unknown>): Promise<Strategy> {
-    return request<Strategy>(`/api/strategies/${id}/`, {
+    return request<Strategy>(`/api/strategies/${id}`, {
       method: "PUT",
       body: JSON.stringify(data),
     });
   },
 
   async deleteStrategy(id: number): Promise<void> {
-    return request<void>(`/api/strategies/${id}/`, { method: "DELETE" });
+    return request<void>(`/api/strategies/${id}`, { method: "DELETE" });
   },
 };

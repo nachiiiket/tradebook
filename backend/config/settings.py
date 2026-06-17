@@ -91,6 +91,8 @@ TEMPLATES = [
     },
 ]
 
+APPEND_SLASH = False
+
 WSGI_APPLICATION = "config.wsgi.application"
 
 # Serverless: no persistent connections. Local/Render: pool connections.

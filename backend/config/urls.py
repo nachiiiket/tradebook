@@ -8,9 +8,10 @@ def health_view(_request):
 
 
 urlpatterns = [
-    path("api/health/", health_view),
-    path("admin/", admin.site.urls),    path("api/auth/", include("accounts.urls")),
-    path("api/", include("journal.urls")),
+    path("api/auth/", include("accounts.urls")),
     path("api/analytics/", include("analytics.urls")),
     path("api/ai/", include("ai_agent.urls")),
+    path("api/", include("journal.urls")),
+    path("api/health", health_view),
+    path("admin/", admin.site.urls),
 ]
