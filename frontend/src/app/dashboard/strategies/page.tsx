@@ -87,7 +87,7 @@ export default function StrategiesPage() {
             className={`card p-5 animate-in stagger-${Math.min(i + 1, 6)} group cursor-pointer hover:-translate-y-0.5`}
           >
             <div className="flex items-center gap-3">
-              <div className="h-3 w-3 rounded-full ring-2 ring-offset-2 ring-offset-slate-900" style={{ backgroundColor: s.color, ringColor: s.color }} />
+              <div className="h-3 w-3 rounded-full" style={{ backgroundColor: s.color, boxShadow: `0 0 0 2px ${s.color}40` }} />
               <h3 className="font-semibold text-white group-hover:text-indigo-300 transition-colors">{s.name}</h3>
             </div>
             {s.description && <p className="mt-3 text-sm text-slate-400 leading-relaxed">{s.description}</p>}
